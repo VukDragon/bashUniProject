@@ -1,0 +1,19 @@
+echo "This program will create automaticly user accounts from your file."
+echo "Follow the instructions"
+
+#checking if file is empty or not
+
+
+if [[ -s base1.txt ]]
+then
+        for i in $( cat base.txt);
+        do
+                sudo useradd $i
+                echo "User $! was created"
+                echo $i:$i "password" | sudo chpasswd
+                echo $i | sudo chage -d 0 "$i"
+                echo "Password for user $i has to be change with next login"
+        done
+else
+        echo "file is empty"
+fi

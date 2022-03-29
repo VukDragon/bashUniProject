@@ -1,0 +1,40 @@
+#!/bin/bash
+
+echo "This program will check the diskusage and inform administrator if the usage is to high"
+
+
+echo "Which usage level is the threshold for You (if You will leave this question without answer 50% will be taken as a defoult)"
+
+read _DiskUsage
+
+echo "$_DiskUsage"
+
+if [ -z  $_DiskUsage ]
+then
+        _maximum="50"
+
+else
+        _maximum=$_DiskUsage
+
+fi
+
+_RealUse=$(df --output=pcent /dev/sda2 | awk -F'%' 'NR==2{print $1}')
+echo "$_RealUse"
+
+if [ $_RealUse -gt $_maximum ]
+then
+        over=($_maximum-$_RealUse)
+        echo "The usage ($_RealUse%) is $(($_RealUse-$_maximum))% over the limit ($_maximum%)"
+        echo "Stand by till we send allert to the administrator"
+        echo "It can take few minutes"
+        subject="Disk Space Allert On $(hostname) at $(date)"
+        body="The usage ($_RealUse%) is $(($_RealUse-$_maximum))% over the limit ($_maximum%)"
+        from="nikola.v.dragon@gmail.com"
+        to="nikola.v.dragon@gmail.com"
+        echo -e "Subject:${subject}\n${body}" | sendmail -f "${from}" -t "${to}"
+        echo "Mail has been send, administrator will contact with You shortly."
+        echo "****END OF PROGRAM****"
+
+else
+        echo "the usage ($_RealUse%) is $(($_maximum-$_RealUse))% under the limit($_maximum%)"
+

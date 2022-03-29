@@ -1,0 +1,66 @@
+#!/bin/bash
+
+#this program will generate basic system info
+
+echo "This program will deliver basic system info"
+echo "program will install necessary apt"
+echo "$(sudo apt install sysstat)"
+
+systemInfoMonitor() {
+        echo "************************************************************************************"
+        echo "System info monitor"
+        echo "************************************************************************************"
+        echo "************************************************************************************"
+        echo "Your host name is: $(hostname)"
+        echo "===================================================================================="
+        echo "$(hostnamectl | grep Kernel)"
+        echo "===================================================================================="
+        echo "Number of tasks: $(ps aux | wc -l)"
+        echo "===================================================================================="
+        echo "System up-time: $(uptime)"
+        echo "===================================================================================="
+        echo "Total and available RAM: "
+        echo "$(free -h)"
+        echo "===================================================================================="
+        echo "Total CPU usage:  $(mpstat )"
+        echo "===================================================================================="
+        echo "Total and avaliable disk size: "
+        echo "$(df -h / )"
+        echo "===================================================================================="
+        echo "Process detailes including (PID, user, %CPU, RAM, process command"
+        echo "$(ps axo pid,user,%cpu,%mem,command --sort -%cpu | head -n 15)"
+        echo "************************************************************************************"
+        echo ""
+        echo ""
+
+}
+
+
+mainMenu() {
+        while :
+        do
+                systemInfoMonitor
+                echo "Would You like to continue? (Y/N)"
+                read ans
+                answer=${ans^^}
+                if [ "$answer" == "Y" ]
+                then
+                        while true
+                          do
+                                clear
+                                systemInfoMonitor
+                                echo "Press crtl + C to stop the program"
+                                sleep 1
+                        done
+                elif [ "$answer" == "N" ]
+                then
+                        echo -e "*** END OF PROGRAM***"
+                else
+                        echo -e "***ERROR INVALID INPUT***"
+                fi
+        done
+
+
+}
+mainMenu
+

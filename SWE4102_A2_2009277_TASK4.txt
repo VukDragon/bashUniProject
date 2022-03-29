@@ -1,0 +1,11 @@
+#!/bin/bash
+FTPU="ftpuser"
+FTPP="xubuntu"
+FTPS="10.0.2.12"
+
+NOW=$(date +"%d-%m-%Y")
+
+backup="logbackup"
+
+sudo lftp -u $FTPU,$FTPP -e "cd backup;mkdir $NOW;cd $NOW;mirror -R -f $backup/*.txt;quit" $FTPS
+

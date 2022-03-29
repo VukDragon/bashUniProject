@@ -1,0 +1,89 @@
+#!/bin/bash
+
+#this program will allow user to check users list, and edit it.
+
+echo "This program will show You userlist"
+echo "and allow to edit it"
+startingList=$(compgen -u)
+echo ""
+echo "$startingList"
+echo ""
+
+echo -n "Would You like to continue? (Y/N)"
+read res
+responce=${res^^}
+
+if [ "$responce" == "Y" ]
+then
+        echo "Now You will operate on users accounts"
+        i=0
+        while [ "$responce" != "N" ]
+        do
+
+                echo "choose one of following options:"
+                echo "1 - add new user"
+                echo "2 - remove curent user"
+                echo "3 - change password"
+                echo "4 - add privileges"
+                echo "5 - remove privilages"
+                echo "Type 'N' if You want ot end program"
+
+                read _Answer
+                _userAnswer=${_Answer^^}
+
+                if [ $_userAnswer = "1" ]
+                then
+                        echo "What user do You want to add?"
+                        read _newUser
+                        answer1=$(sudo useradd $_newUser)
+                        echo "You have created new user: $_newUser"
+
+                elif [ $_userAnswer = "2" ]
+                then
+                        echo "Which user do You want to remove?:"
+                        read _delUser
+                        answer2=$(sudo userdel $_delUser )
+                        echo "You have removed: $_delUser"
+
+                elif [ $_userAnswer = "3" ]
+                 then
+                        echo "which user's password do You want to change?:"
+                        read _user
+
+                        answer3=$(sudo passwd $_user)
+                        echo "You have changed $_user password"
+
+                elif [ $_userAnswer = "4" ]
+                then
+                        echo "Which user will get sudo/root privilage?:"
+                        read _newPrivilage
+                        answer4=$(sudo usermod -aG sudo $_newPrivilage)
+                        echo "$_newPrivilage just got sudo/root privilage"
+
+                elif [ $_userAnswer = "5" ]
+                then
+                        echo "Sudo users list:"
+                        sudo=$(grep '^sudo:.*$' /etc/group | cut -d: -f4)
+                        echo "$sudo"
+                        echo "which user will lost sudo/root privilage?:"
+                        read _removePrivilage
+                        answer5=$(sudo deluser $_removePrivilage sudo)
+                        echo "$removePrivilage no longer has sudo/root privilage"
+
+                elif [ $_userAnswer = "N" ]
+                then
+
+                        echo "***END OF PROGRAM***"
+                        break
+                else
+                        echo "*** WRONG INPUT***"
+                fi
+        done
+
+elif [ "$responce" == "N" ]
+then
+        echo "***END OF PROGRAM***"
+else
+        echo "*** WRONG INPUT***"
+
+fi
